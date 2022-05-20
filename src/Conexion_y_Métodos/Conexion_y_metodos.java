@@ -1,4 +1,4 @@
-package Conexion_y_MÈtodos;
+package Conexion_y_M√©todos;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -13,13 +13,15 @@ import java.util.Scanner;
 
 public class Conexion_y_metodos {
 	private static String bd = "XE";
-	private static String login="alumno";
-	private static String password="alumno";
-	private static String url="jdbc:oracle:thin:@localhost:1521:"+bd;
+	private static String login="PROYECTO";
+	private static String password="proyecto";
+	private static String url="jdbc:oracle:thin:@localhost:1521/"+bd;
 	static Connection conexion =null;
 	static Statement st =null;
 	static ResultSet rs =null;
 	static CallableStatement cs =null;
+	static String email = null;
+	static String contra = null;
 
 	public static void conectar() {
 		System.out.println("------------------------------------------");
@@ -43,7 +45,7 @@ public class Conexion_y_metodos {
 				rs = st.executeQuery("select * from videojuego");
 				break;
 			case 1:
-				rs = st.executeQuery("select * from videojuego where categoria = 'AcciÛn'");
+				rs = st.executeQuery("select * from videojuego where categoria = 'Acci√≥n'");
 				break;
 			case 2:
 				rs = st.executeQuery("select * from videojuego where categoria = 'Aventura'");
@@ -71,54 +73,51 @@ public class Conexion_y_metodos {
 	}
 	public static void Registro(int num) {
 		Scanner sc = new Scanner(System.in);
-		String email = null;
-		String contra =null;
+		String email2 = null;
+		String contra2 =null;
 		int aux = -1;
 		try {
 			if(num == 0) {
 				while(aux ==-1) {
 					System.out.println("introduce el email");
-					email = sc.nextLine();
-					System.out.println("introduce la contraseÒa");
-					contra = sc.nextLine();
+					email2 = sc.nextLine();
+					System.out.println("introduce la contrase√±a");
+					contra2 = sc.nextLine();
 					cs = conexion.prepareCall("{ ? = call REGISTRO(?,?)}");
-					cs.setString(2, email);
-					cs.setString(3,contra);
+					cs.setString(2, email2);
+					cs.setString(3,contra2);
 					cs.registerOutParameter(1, Types.INTEGER);
 					cs.execute();
 					aux = cs.getInt(1);
 					if(aux==-1) {
-						System.out.println("datos mal introducidos o no existentes");
+						System.out.println("datos mal introducidos o inexistentes");
 					}
 				}
+				email = email2;
+				contra = contra2;
 			}
 			else if(num ==1) {
 				System.out.println("introduce el email");
 				email = sc.nextLine();
-				System.out.println("introduce la contraseÒa");
+				System.out.println("introduce la contrase√±a");
 				contra = sc.nextLine();
 				st = conexion.createStatement();
 				st.executeUpdate("insert into CLIENTES values ('"+email+"','" + contra+"')");
-				
 			}
 		} 
 		catch (SQLIntegrityConstraintViolationException e) {
-			System.out.println("Este email ya est· registrado");
+			System.out.println("Este email ya est√° registrado");
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
 		}
-	
-					
-		
-
 	}
 
 
 
 	public static void main(String[] args) {
 		conectar();
-		Registro(1);
+		Registro(0);
 	}
 
 
