@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.Scanner;
@@ -96,10 +97,15 @@ public class Conexion_y_metodos {
 				email = sc.nextLine();
 				System.out.println("introduce la contraseña");
 				contra = sc.nextLine();
-				
+				st = conexion.createStatement();
+				st.executeUpdate("insert into CLIENTES values ('"+email+"','" + contra+"')");
 				
 			}
-		} catch (SQLException e) {
+		} 
+		catch (SQLIntegrityConstraintViolationException e) {
+			System.out.println("Este email ya está registrado");
+		}
+		catch (SQLException e) {
 			e.printStackTrace();
 		}
 	
@@ -112,7 +118,7 @@ public class Conexion_y_metodos {
 
 	public static void main(String[] args) {
 		conectar();
-		Registro(0);
+		Registro(1);
 	}
 
 
